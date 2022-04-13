@@ -1,17 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Events;
 
 public class touchableButton : MonoBehaviour {
 
 	public GameObject touchDown;
 	public GameObject touchRelease;
-//	public GameObject touchStay;
-//	public GameObject touchExit;
+	//	public GameObject touchStay;
+	//	public GameObject touchExit;
+
+	public UnityEvent touchDownEvent;
 
 	// SELECTED
 	void OnTouchDown() 
 	{
-		touchDown.SetActive (true);
+		if (touchDown)
+        {
+			touchDown.SetActive(true);
+		}
+
+		touchDownEvent.Invoke();
+
 	}
 
 	// DESELECTED
