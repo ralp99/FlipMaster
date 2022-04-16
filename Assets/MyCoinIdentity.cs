@@ -7,28 +7,61 @@ public class MyCoinIdentity : MonoBehaviour
     FlipManager flipManager;
 
     public Animator Animator;
-    bool isBackfacing;
+    public GameObject Frontside;
+    public GameObject Backside;
 
-    public void DoFlipAnimation()
+    public bool BackActive;
+    public Material FrontColor;
+    public Material BackColor;
+
+    public int MyColumn;
+    public int MyRow;
+
+    public void TouchEvent_DoFlipAnimation()
     {
         string performFlip = "flipA_B_ccw";
 
-        if (isBackfacing)
+        if (BackActive)
         {
              performFlip = "flipB_A_cw";
         }
 
-        isBackfacing = !isBackfacing;
+        BackActive = !BackActive;
         Animator.SetTrigger(performFlip);
+    }
+
+    IEnumerator InitializeColors()
+    {
+
+        int newFrontMatInt = Random.Range(0, flipManager.ColorMaterials.Length);
+        int newBackMatInt = Random.Range(0, flipManager.ColorMaterials.Length);
+
+        if (!FrontColor)
+        {
+            while (newFrontMatInt == newBackMatInt)
+            {
+                newBackMatInt = Random.Range(0, flipManager.ColorMaterials.Length);
+                yield return null;
+            }
+
+            FrontColor = flipManager.ColorMaterials[newFrontMatInt];
+            BackColor = flipManager.ColorMaterials[newBackMatInt];
+        }
+
+        Frontside.GetComponent<Renderer>().material = FrontColor;
+        Backside.GetComponent<Renderer>().material = BackColor;
     }
 
     void Start()
     {
-        flipManager = FlipManager.Instance;
+       flipManager = FlipManager.Instance;
+       StartCoroutine(InitializeColors());
     }
 
-    void Update()
+    private void OnDisable()
     {
-        
+        FrontColor = null;
+        BackColor = null;
     }
+
 }
