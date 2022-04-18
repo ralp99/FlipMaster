@@ -11,6 +11,14 @@ public class FlipManager : MonoBehaviour
     public GameObject CoinSource;
     public GameObject NextCoin;
     public GameObject PreviewCoin;
+    private MyCoinIdentity shootingCoinIdentity;
+    private MyCoinIdentity nextCoinIdentity;
+    private MyCoinIdentity onDeckCoinIdentity;
+    public Transform shootingCoinTransform;
+
+
+
+    public GameObject[] Alleys;
 
     public int ColumnQuantity = 6;
     public float HcoinPadding = 0.1f;
@@ -22,7 +30,6 @@ public class FlipManager : MonoBehaviour
 
     public List<ColumnSo> ColumnsList;
 
-   // private GameObject lastPlacedCoin;
     private List<GameObject> currentPlacedCoins = new List<GameObject>();
 
     private void Awake()
@@ -37,11 +44,12 @@ public class FlipManager : MonoBehaviour
         GameSessionStart();
     }
 
-
+    /*
     void Update()
     {
         
     }
+    */
 
 
     void GameSessionStart()
@@ -53,10 +61,13 @@ public class FlipManager : MonoBehaviour
             ColumnsList.Add(newColumnSo);
         }
 
+        nextCoinIdentity = NextCoin.GetComponent<MyCoinIdentity>();
+        onDeckCoinIdentity = PreviewCoin.GetComponent<MyCoinIdentity>();
+        shootingCoinIdentity = shootingCoinTransform.GetComponent<MyCoinIdentity>();
+
+
         PopulateCoinRow();
-    //    PopulateCoinRow();
-
-
+        PopulateCoinRow();
     }
 
 
@@ -69,37 +80,60 @@ public class FlipManager : MonoBehaviour
             GameObject newCoin = Instantiate(CoinSource) as GameObject;
             ColumnsList[i].CoinColumn.Add(newCoin);
             currentPlacedCoins.Add(newCoin);
-            PlaceNewCoinInField();
+            PlaceNewCoinInField(i == 0);
         }
     }
 
-    void PlaceNewCoinInField()
+    void PlaceNewCoinInField(bool resetH)
     {
-        if (currentPlacedCoins.Count < 2)
+
+        Transform currentCoin = currentPlacedCoins[currentPlacedCoins.Count - 1].transform;
+        float nextCoinHpos = 0.0f;
+
+        if (currentPlacedCoins.Count > 1 && !resetH)
         {
-            return;
+            Transform previousCoin = currentPlacedCoins[currentPlacedCoins.Count - 2].transform;
+            nextCoinHpos = previousCoin.transform.localPosition.x + HcoinPadding;
         }
 
-        Transform currentCoin = currentPlacedCoins[currentPlacedCoins.Count-1].transform;
-        Transform previousCoin = currentPlacedCoins[currentPlacedCoins.Count - 2].transform;
-
-
-        /*
-        if (currentPlacedCoins.Count > ColumnQuantity)
-        {
-            //  ColumnQuantity += VcoinPadding;
-            currentVlevel = currentVlevel + VcoinPadding;
-            currentPlacedCoins.Clear();
-        }
-        */
-
-        float lastCoinHpos = previousCoin.transform.localPosition.x;
-        // Vector3 newCoinPos = new Vector3(lastCoinHpos+HcoinPadding, 0, 0);
-        Vector3 newCoinPos = new Vector3(lastCoinHpos + HcoinPadding, currentVlevel, 0);
-
-
+        Vector3 newCoinPos = new Vector3(nextCoinHpos, currentVlevel, 0);
         currentCoin.localPosition = newCoinPos;
     }
+
+    public void ClickEvents_AddRow()
+    {
+        PopulateCoinRow();
+    }
+
+
+
+
+    public void ClickEvents_ShootPiece(int alleyNumber)
+    {
+        GameObject activeAlley = Alleys[alleyNumber];
+
+
+        TransferColorValues(nextCoinIdentity, shootingCoinIdentity);
+        TransferColorValues(onDeckCoinIdentity, nextCoinIdentity);
+        StartCoroutine(onDeckCoinIdentity.InitializeColors(true));
+
+
+
+
+
+    }
+
+
+    private void TransferColorValues(MyCoinIdentity sourceCoin, MyCoinIdentity goalCoin)
+    {
+
+        goalCoin.AssignMaterials(sourceCoin.FrontColor, sourceCoin.BackColor);
+
+
+
+    }
+
+
 
 }
                          

@@ -10,6 +10,7 @@ public class touchableButton : MonoBehaviour {
 	//	public GameObject touchExit;
 
 	public UnityEvent touchDownEvent;
+	public UnityEvent touchReleaseEvent;
 
 	// SELECTED
 	void OnTouchDown() 
@@ -26,7 +27,12 @@ public class touchableButton : MonoBehaviour {
 	// DESELECTED
 	void OnTouchUp() 
 	{
-		if (touchRelease != null) touchRelease.SetActive (true);
+		if (touchRelease != null)
+		{
+			touchRelease.SetActive(true);
+		}
+
+		touchReleaseEvent.Invoke();
 
 	}
 

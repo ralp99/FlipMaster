@@ -13,6 +13,9 @@ public class MyCoinIdentity : MonoBehaviour
     public bool BackActive;
     public Material FrontColor;
     public Material BackColor;
+    private Material newFrontColor;
+    private Material newBackColor;
+
 
     public int MyColumn;
     public int MyRow;
@@ -28,15 +31,22 @@ public class MyCoinIdentity : MonoBehaviour
 
         BackActive = !BackActive;
         Animator.SetTrigger(performFlip);
+        newFrontColor = BackColor;
+        newBackColor = FrontColor;
+        FrontColor = newFrontColor;
+        BackColor = newBackColor;
+
+
+
     }
 
-    IEnumerator InitializeColors()
+    public IEnumerator InitializeColors(bool forceInit = false)
     {
 
         int newFrontMatInt = Random.Range(0, flipManager.ColorMaterials.Length);
         int newBackMatInt = Random.Range(0, flipManager.ColorMaterials.Length);
 
-        if (!FrontColor)
+        if (!FrontColor || forceInit)
         {
             while (newFrontMatInt == newBackMatInt)
             {
@@ -63,5 +73,16 @@ public class MyCoinIdentity : MonoBehaviour
         FrontColor = null;
         BackColor = null;
     }
+
+    public void AssignMaterials(Material frontMatAssign, Material backMatAssign)
+    {
+        FrontColor = frontMatAssign;
+        Frontside.GetComponent<Renderer>().material = frontMatAssign;
+
+        BackColor = backMatAssign;
+        Backside.GetComponent<Renderer>().material = backMatAssign;
+    }
+
+
 
 }
