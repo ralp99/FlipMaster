@@ -20,6 +20,9 @@ public class MyCoinIdentity : MonoBehaviour
     public int MyColumn;
     public int MyRow;
 
+    [HideInInspector]
+    public bool isShotCoin;
+
     public void TouchEvent_DoFlipAnimation()
     {
         string performFlip = "flipA_B_ccw";

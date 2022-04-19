@@ -121,11 +121,28 @@ public class FlipManager : MonoBehaviour
     void InstantiateShotCoinAtColumn(AlleyPress alley)
     {
         GameObject newCoin = Instantiate(CoinSource) as GameObject;
-        TransferColorValues(shootingCoinIdentity, newCoin.GetComponent<MyCoinIdentity>());
-        ColumnSo thisColObject = Dict_Alley_Columns[alley];
-         Transform borderCoin = thisColObject.CoinColumn[thisColObject.CoinColumn.Count - 1].transform;
-        // Transform borderCoin = thisColObject.CoinColumn[0].transform;
+        MyCoinIdentity newCoinIdentity = newCoin.GetComponent<MyCoinIdentity>();
+        newCoinIdentity.isShotCoin = true;
 
+        TransferColorValues(shootingCoinIdentity, newCoinIdentity);
+        ColumnSo thisColObject = Dict_Alley_Columns[alley];
+
+        bool lastShotCoin = false;
+        Transform borderCoin = null;
+
+        if (thisColObject.CoinColumn[thisColObject.CoinColumn.Count - 1].GetComponent<MyCoinIdentity>().isShotCoin)
+        {
+            lastShotCoin = true;
+        }
+
+        if (lastShotCoin)
+        {
+            borderCoin = thisColObject.CoinColumn[thisColObject.CoinColumn.Count - 1].transform;
+        }
+        else
+        {
+            borderCoin = thisColObject.CoinColumn[0].transform;
+        }
 
         thisColObject.CoinColumn.Add(newCoin);
 
@@ -133,10 +150,6 @@ public class FlipManager : MonoBehaviour
             borderCoin.position.z);
 
         newCoin.transform.position = newCoinPosition;
-
-        // shows up in correct list, but wrong phys location
-        // should offset below last piece in that list
-
 
     }
 
