@@ -31,12 +31,6 @@ public class MyCoinIdentity : MonoBehaviour
 
         BackActive = !BackActive;
         Animator.SetTrigger(performFlip);
-        newFrontColor = BackColor;
-        newBackColor = FrontColor;
-        FrontColor = newFrontColor;
-        BackColor = newBackColor;
-
-
 
     }
 
