@@ -48,8 +48,12 @@ MonoBehaviour:
   Frontside: {fileID: 6659392313260731133}
   Backside: {fileID: 6659392313672321817}
   BackActive: 0
+  Armed: 0
   FrontColor: {fileID: 0}
   BackColor: {fileID: 0}
+  MyColumn: 0
+  MyRow: 0
+  isShotCoin: 0
 --- !u!1 &6659392313260731133
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,8 +302,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.22, y: 1, z: 1.28}
+  m_Center: {x: 0, y: 0, z: 0.12}
 --- !u!23 &6659392314695808488
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -389,3 +393,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  touchReleaseEvent:
+    m_PersistentCalls:
+      m_Calls: []

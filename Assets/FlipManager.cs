@@ -212,7 +212,7 @@ public class FlipManager : MonoBehaviour
 
                 if (j < coinCount-1)
                 {
-                    nextCoinIdentity = currentColumnSo.CoinColumn[j + 1].GetComponent<MyCoinIdentity>();
+                    nextVertCoinIdentity = currentColumnSo.CoinColumn[j + 1].GetComponent<MyCoinIdentity>();
                     if (nextVertCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
                     {
                         nextVertCoinIdentity.Armed = true;
@@ -222,7 +222,7 @@ public class FlipManager : MonoBehaviour
 
                 // checking horizontally
 
-                if (currentCoinIdentity.MyColumn < ColumnsList.Count)
+              //  if (currentCoinIdentity.MyColumn < ColumnsList.Count)
                 {
                //     nextHorizCoinIdentity
                 }
