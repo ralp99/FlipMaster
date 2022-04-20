@@ -1038,7 +1038,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 405894205}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.53, y: 9.97, z: 0}
+  m_LocalPosition: {x: -2.06, y: 10.61, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -6754,11 +6754,12 @@ MonoBehaviour:
   - {fileID: 1792352247}
   - {fileID: 2044135366}
   ColumnQuantity: 6
-  HcoinPadding: 1.25
-  VcoinPadding: 1.25
+  HcoinPadding: 0.85
+  VcoinPadding: 1
   ColumnSource: {fileID: 11400000, guid: fd4b16e2a33d2724db9a4cd09bedfa14, type: 2}
   ColumnsList: []
   currentPlacedCoins: []
+  ShowAlleysAtStart: 1
 --- !u!1 &1724853099
 GameObject:
   m_ObjectHideFlags: 0

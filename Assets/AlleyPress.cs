@@ -13,7 +13,7 @@ public class AlleyPress : MonoBehaviour
     {
         flipManager = FlipManager.Instance;
         renderer = GetComponent<Renderer>();
-        AlleyVisibility(false);
+        AlleyVisibility(flipManager.ShowAlleysAtStart);
     }
 
     public void ClickEvents_TouchAlley()

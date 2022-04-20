@@ -35,6 +35,8 @@ public class FlipManager : MonoBehaviour
 
     public Dictionary<AlleyPress, ColumnSo> Dict_Alley_Columns = new Dictionary<AlleyPress, ColumnSo>();
 
+    [Header("Debug")]
+    public bool ShowAlleysAtStart = false;
 
 
     private void Awake()
