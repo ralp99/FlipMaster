@@ -11,6 +11,7 @@ public class MyCoinIdentity : MonoBehaviour
     public GameObject Backside;
 
     public bool BackActive;
+    public bool Armed;
     public Material FrontColor;
     public Material BackColor;
     private Material newFrontColor;
@@ -69,6 +70,7 @@ public class MyCoinIdentity : MonoBehaviour
     {
         FrontColor = null;
         BackColor = null;
+        Armed = false;
     }
 
     public void AssignMaterials(Material frontMatAssign, Material backMatAssign)

@@ -535,10 +535,12 @@ MonoBehaviour:
   Frontside: {fileID: 548452045}
   Backside: {fileID: 867960104}
   BackActive: 0
+  Armed: 0
   FrontColor: {fileID: 0}
   BackColor: {fileID: 0}
   MyColumn: 0
   MyRow: 0
+  isShotCoin: 0
 --- !u!114 &140699100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1012,6 +1014,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &405894205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 405894206}
+  m_Layer: 0
+  m_Name: CoinSlider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &405894206
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405894205}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &409855904
 GameObject:
   m_ObjectHideFlags: 0
@@ -4587,10 +4619,12 @@ MonoBehaviour:
   Frontside: {fileID: 1386969554}
   Backside: {fileID: 2132140224}
   BackActive: 0
+  Armed: 0
   FrontColor: {fileID: 0}
   BackColor: {fileID: 0}
   MyColumn: 0
   MyRow: 0
+  isShotCoin: 0
 --- !u!95 &1104740554
 Animator:
   serializedVersion: 3
@@ -6808,6 +6842,7 @@ MonoBehaviour:
   NextCoin: {fileID: 140699093}
   PreviewCoin: {fileID: 1104740550}
   shootingCoinTransform: {fileID: 1953728532}
+  CoinSlider: {fileID: 405894206}
   Alleys:
   - {fileID: 602964023}
   - {fileID: 1780637673}
@@ -6820,6 +6855,7 @@ MonoBehaviour:
   VcoinPadding: 1.25
   ColumnSource: {fileID: 11400000, guid: fd4b16e2a33d2724db9a4cd09bedfa14, type: 2}
   ColumnsList: []
+  currentPlacedCoins: []
 --- !u!1 &1724853099
 GameObject:
   m_ObjectHideFlags: 0
@@ -7652,10 +7688,12 @@ MonoBehaviour:
   Frontside: {fileID: 634885115}
   Backside: {fileID: 1724853099}
   BackActive: 0
+  Armed: 0
   FrontColor: {fileID: 0}
   BackColor: {fileID: 0}
   MyColumn: 0
   MyRow: 0
+  isShotCoin: 0
 --- !u!95 &1953728535
 Animator:
   serializedVersion: 3

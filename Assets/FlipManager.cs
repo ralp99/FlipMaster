@@ -15,6 +15,7 @@ public class FlipManager : MonoBehaviour
     private MyCoinIdentity nextCoinIdentity;
     private MyCoinIdentity onDeckCoinIdentity;
     public Transform shootingCoinTransform;
+    public Transform CoinSlider;
 
 
 
@@ -30,7 +31,7 @@ public class FlipManager : MonoBehaviour
 
     public List<ColumnSo> ColumnsList;
 
-    private List<GameObject> currentPlacedCoins = new List<GameObject>();
+    public List<GameObject> currentPlacedCoins = new List<GameObject>();
 
     public Dictionary<AlleyPress, ColumnSo> Dict_Alley_Columns = new Dictionary<AlleyPress, ColumnSo>();
 
@@ -47,15 +48,6 @@ public class FlipManager : MonoBehaviour
     {
         GameSessionStart();
     }
-
-    /*
-    void Update()
-    {
-        
-    }
-    */
-
-
    
 
     void GameSessionStart()
@@ -90,8 +82,10 @@ public class FlipManager : MonoBehaviour
         for (int i = 0; i < ColumnsList.Count; i++)
         {
             GameObject newCoin = Instantiate(CoinSource) as GameObject;
+            newCoin.transform.SetParent(CoinSlider);
             ColumnsList[i].CoinColumn.Add(newCoin);
             currentPlacedCoins.Add(newCoin);
+            newCoin.GetComponent<MyCoinIdentity>().MyColumn = i;
             PlaceNewCoinInField(i == 0);
         }
     }
@@ -118,14 +112,38 @@ public class FlipManager : MonoBehaviour
     }
 
 
+
+
+
+    public void ClickEvents_ShootPiece(AlleyPress alleyPress)
+    {
+        CoinSideUpdates();
+
+        /*
+        //  shootingCoinTransform.position = activeAlley.transform.
+        Mesh mesh = AlleyObject.GetComponent<MeshFilter>().mesh;
+        Vector3[] vertices = mesh.vertices;
+
+        shootingCoinTransform.position = vertices[0];
+        */
+        shootingCoinTransform.gameObject.SetActive(true);
+        shootingCoinTransform.position = alleyPress.LaunchPoint.position;
+
+        InstantiateShotCoinAtColumn(alleyPress);
+
+    }
+
     void InstantiateShotCoinAtColumn(AlleyPress alley)
     {
         GameObject newCoin = Instantiate(CoinSource) as GameObject;
+        newCoin.transform.SetParent(CoinSlider);
+        currentPlacedCoins.Add(newCoin);
         MyCoinIdentity newCoinIdentity = newCoin.GetComponent<MyCoinIdentity>();
         newCoinIdentity.isShotCoin = true;
 
         TransferColorValues(shootingCoinIdentity, newCoinIdentity);
         ColumnSo thisColObject = Dict_Alley_Columns[alley];
+        newCoinIdentity.MyColumn = System.Array.IndexOf(Alleys, alley.gameObject);
 
         bool lastShotCoin = false;
         Transform borderCoin = null;
@@ -151,25 +169,71 @@ public class FlipManager : MonoBehaviour
 
         newCoin.transform.position = newCoinPosition;
 
+        CheckIfArmed();
+
     }
 
-
-
-    public void ClickEvents_ShootPiece(AlleyPress alleyPress)
+    private void CheckIfArmed()
     {
-        CoinSideUpdates();
+    
 
-        /*
-        //  shootingCoinTransform.position = activeAlley.transform.
-        Mesh mesh = AlleyObject.GetComponent<MeshFilter>().mesh;
-        Vector3[] vertices = mesh.vertices;
 
-        shootingCoinTransform.position = vertices[0];
-        */
-        shootingCoinTransform.gameObject.SetActive(true);
-        shootingCoinTransform.position = alleyPress.LaunchPoint.position;
+        for (int i = 0; i < ColumnsList.Count; i++)
+        {
+            ColumnSo currentColumnSo = ColumnsList[i];
 
-        InstantiateShotCoinAtColumn(alleyPress);
+            int coinCount = currentColumnSo.CoinColumn.Count;
+
+            for (int j = 0; j < coinCount; j++)
+            {
+                MyCoinIdentity currentCoinIdentity =
+                    currentColumnSo.CoinColumn[j].GetComponent<MyCoinIdentity>();
+
+                MyCoinIdentity previousVertCoinIdentity = null;
+                MyCoinIdentity nextVertCoinIdentity = null;
+
+                MyCoinIdentity previousHorizCoinIdentity = null;
+                MyCoinIdentity nextHorizCoinIdentity = null;
+
+
+                currentCoinIdentity.Armed = false;
+
+                // checking vertically
+
+                if (j > 0)
+                {
+                    previousVertCoinIdentity = currentColumnSo.CoinColumn[j-1].GetComponent<MyCoinIdentity>();
+                    if (previousVertCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
+                    {
+                        previousVertCoinIdentity.Armed = true;
+                        currentCoinIdentity.Armed = true;
+                    }
+                }
+
+                if (j < coinCount-1)
+                {
+                    nextCoinIdentity = currentColumnSo.CoinColumn[j + 1].GetComponent<MyCoinIdentity>();
+                    if (nextVertCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
+                    {
+                        nextVertCoinIdentity.Armed = true;
+                        currentCoinIdentity.Armed = true;
+                    }
+                }
+
+                // checking horizontally
+
+                if (currentCoinIdentity.MyColumn < ColumnsList.Count)
+                {
+               //     nextHorizCoinIdentity
+                }
+
+
+
+            }
+
+
+        }
+
 
 
     }
