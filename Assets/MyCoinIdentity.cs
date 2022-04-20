@@ -36,7 +36,7 @@ public class MyCoinIdentity : MonoBehaviour
 
         BackActive = !BackActive;
         Animator.SetTrigger(performFlip);
-        flipManager.CheckIfMatching();
+        flipManager.CheckAllCoinsMatching();
 
     }
 

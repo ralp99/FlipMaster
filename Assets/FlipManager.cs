@@ -185,11 +185,55 @@ public class FlipManager : MonoBehaviour
 
         newCoin.transform.position = newCoinPosition;
 
-        CheckIfMatching();
+        CheckAllCoinsMatching();
 
     }
 
-    public void CheckIfMatching()
+
+    void CheckColorMatches(MyCoinIdentity coinA, MyCoinIdentity coinB)
+    {
+        Material checkColorA = null;
+        Material checkColorB = null;
+
+        if (coinA.BackActive)
+        {
+            checkColorA = coinA.BackColor;
+        }
+        else
+        {
+            checkColorA = coinA.FrontColor;
+        }
+
+        if (coinB.BackActive)
+        {
+            checkColorB = coinB.BackColor;
+        }
+        else
+        {
+            checkColorB = coinB.FrontColor;
+        }
+
+        if (checkColorA == checkColorB)
+        {
+            SetMatchingStatus(coinA, true);
+            SetMatchingStatus(coinB, true);
+        }
+    }
+
+    void SetMatchingStatus(MyCoinIdentity coinID, bool isMatching)
+    {
+        Color useColor = LonelyTextColor;
+        if (isMatching)
+        {
+            useColor = MatchingTextColor;
+        }
+        coinID.TextMesh.color = useColor;
+        coinID.Matching = isMatching;
+    }
+
+
+
+    public void CheckAllCoinsMatching()
     {
 
         int currentTestCounter = 0;
@@ -218,21 +262,13 @@ public class FlipManager : MonoBehaviour
                 if (j > 0)
                 {
                     previousVertCoinIdentity = currentColumnSo.CoinColumn[j-1].GetComponent<MyCoinIdentity>();
-                    if (previousVertCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
-                    {
-                        SetMatchingStatus(previousVertCoinIdentity, true);
-                        SetMatchingStatus(currentCoinIdentity, true);
-                    }
+                    CheckColorMatches(previousVertCoinIdentity, currentCoinIdentity);
                 }
 
                 if (j < coinCount-1)
                 {
                     nextVertCoinIdentity = currentColumnSo.CoinColumn[j + 1].GetComponent<MyCoinIdentity>();
-                    if (nextVertCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
-                    {
-                        SetMatchingStatus(nextVertCoinIdentity, true);
-                        SetMatchingStatus(currentCoinIdentity, true);
-                    }
+                    CheckColorMatches(nextVertCoinIdentity, currentCoinIdentity);
                 }
 
                 // checking horizontally
@@ -260,13 +296,9 @@ public class FlipManager : MonoBehaviour
                             if (nextColumn.CoinColumn[j] != null)
                             {
                                 nextHorizCoinIdentity = nextColumn.CoinColumn[j].GetComponent<MyCoinIdentity>();
-                                if (nextHorizCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
-                                {
-                                    SetMatchingStatus(nextHorizCoinIdentity, true);
-                                    SetMatchingStatus(currentCoinIdentity, true);
-                                }
+                                CheckColorMatches(nextHorizCoinIdentity, currentCoinIdentity);
                             }
-                        }
+                    }
                     /*
 
                     int currentCoinIndex = 0;
@@ -293,27 +325,10 @@ public class FlipManager : MonoBehaviour
                         if (prevColumn.CoinColumn[j] != null)
                         {
                             previousHorizCoinIdentity = prevColumn.CoinColumn[j].GetComponent<MyCoinIdentity>();
-                            if (previousHorizCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
-                            {
-                                SetMatchingStatus(previousHorizCoinIdentity, true);
-                                SetMatchingStatus(currentCoinIdentity, true);
-                            }
+                            CheckColorMatches(previousHorizCoinIdentity, currentCoinIdentity);
                         }
-
                     }
-
-
-
-
-
                 }
-
-
-
-
-
-
-
 
 
 
@@ -326,16 +341,7 @@ public class FlipManager : MonoBehaviour
 
     }
 
-    void SetMatchingStatus(MyCoinIdentity coinID, bool isMatching)
-    {
-        Color useColor = LonelyTextColor;
-        if (isMatching)
-        {
-            useColor = MatchingTextColor;
-        }
-        coinID.TextMesh.color = useColor;
-        coinID.Matching = isMatching;
-    }
+
 
 
 
