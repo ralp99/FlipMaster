@@ -535,9 +535,10 @@ MonoBehaviour:
   Frontside: {fileID: 548452045}
   Backside: {fileID: 867960104}
   BackActive: 0
-  Armed: 0
+  Matching: 0
   FrontColor: {fileID: 0}
   BackColor: {fileID: 0}
+  TextMesh: {fileID: 0}
   MyColumn: 0
   MyRow: 0
   isShotCoin: 0
@@ -4556,9 +4557,10 @@ MonoBehaviour:
   Frontside: {fileID: 1386969554}
   Backside: {fileID: 2132140224}
   BackActive: 0
-  Armed: 0
+  Matching: 0
   FrontColor: {fileID: 0}
   BackColor: {fileID: 0}
+  TextMesh: {fileID: 0}
   MyColumn: 0
   MyRow: 0
   isShotCoin: 0
@@ -6351,7 +6353,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1496499634
 Transform:
   m_ObjectHideFlags: 0
@@ -6759,7 +6761,9 @@ MonoBehaviour:
   ColumnSource: {fileID: 11400000, guid: fd4b16e2a33d2724db9a4cd09bedfa14, type: 2}
   ColumnsList: []
   currentPlacedCoins: []
-  ShowAlleysAtStart: 1
+  ShowAlleysAtStart: 0
+  MatchingTextColor: {r: 0.77832067, g: 1, b: 0, a: 1}
+  LonelyTextColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &1724853099
 GameObject:
   m_ObjectHideFlags: 0
@@ -7529,9 +7533,10 @@ MonoBehaviour:
   Frontside: {fileID: 634885115}
   Backside: {fileID: 1724853099}
   BackActive: 0
-  Armed: 0
+  Matching: 0
   FrontColor: {fileID: 0}
   BackColor: {fileID: 0}
+  TextMesh: {fileID: 0}
   MyColumn: 0
   MyRow: 0
   isShotCoin: 0

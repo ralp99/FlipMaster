@@ -16,7 +16,7 @@ public class FlipManager : MonoBehaviour
     private MyCoinIdentity onDeckCoinIdentity;
     public Transform shootingCoinTransform;
     public Transform CoinSlider;
-
+    
 
 
     public GameObject[] Alleys;
@@ -37,7 +37,13 @@ public class FlipManager : MonoBehaviour
 
     [Header("Debug")]
     public bool ShowAlleysAtStart = false;
+    public Color MatchingTextColor = new Color();
+    public Color LonelyTextColor = new Color();
 
+
+
+    int namedCoinCounter;
+    int namedColumnListCounter;
 
     private void Awake()
     {
@@ -58,6 +64,8 @@ public class FlipManager : MonoBehaviour
         for (int i = 0; i < ColumnQuantity; i++)
         {
             ColumnSo newColumnSo = Instantiate(ColumnSource) as ColumnSo;
+            newColumnSo.name = newColumnSo.name + namedColumnListCounter;
+            namedColumnListCounter++;
             ColumnsList.Add(newColumnSo);
             Dict_Alley_Columns.Add(Alleys[i].GetComponent<AlleyPress>(), newColumnSo);
         }
@@ -73,7 +81,17 @@ public class FlipManager : MonoBehaviour
         PopulateCoinRow();
     }
 
-
+    GameObject InstantiatedCoin()
+    {
+        // check in pool 
+        GameObject newCoin = Instantiate(CoinSource) as GameObject;
+        newCoin.name = newCoin.name + namedCoinCounter;
+        newCoin.GetComponent<MyCoinIdentity>().TextMesh.text = namedCoinCounter.ToString();
+        namedCoinCounter++;
+        newCoin.transform.SetParent(CoinSlider);
+        currentPlacedCoins.Add(newCoin);
+        return newCoin;
+    }
 
 
 
@@ -83,10 +101,8 @@ public class FlipManager : MonoBehaviour
 
         for (int i = 0; i < ColumnsList.Count; i++)
         {
-            GameObject newCoin = Instantiate(CoinSource) as GameObject;
-            newCoin.transform.SetParent(CoinSlider);
+            GameObject newCoin = InstantiatedCoin();
             ColumnsList[i].CoinColumn.Add(newCoin);
-            currentPlacedCoins.Add(newCoin);
             newCoin.GetComponent<MyCoinIdentity>().MyColumn = i;
             PlaceNewCoinInField(i == 0);
         }
@@ -137,9 +153,7 @@ public class FlipManager : MonoBehaviour
 
     void InstantiateShotCoinAtColumn(AlleyPress alley)
     {
-        GameObject newCoin = Instantiate(CoinSource) as GameObject;
-        newCoin.transform.SetParent(CoinSlider);
-        currentPlacedCoins.Add(newCoin);
+        GameObject newCoin = InstantiatedCoin();
         MyCoinIdentity newCoinIdentity = newCoin.GetComponent<MyCoinIdentity>();
         newCoinIdentity.isShotCoin = true;
 
@@ -171,14 +185,14 @@ public class FlipManager : MonoBehaviour
 
         newCoin.transform.position = newCoinPosition;
 
-        CheckIfArmed();
+        CheckIfMatching();
 
     }
 
-    private void CheckIfArmed()
+    public void CheckIfMatching()
     {
-    
 
+        int currentTestCounter = 0;
 
         for (int i = 0; i < ColumnsList.Count; i++)
         {
@@ -197,8 +211,7 @@ public class FlipManager : MonoBehaviour
                 MyCoinIdentity previousHorizCoinIdentity = null;
                 MyCoinIdentity nextHorizCoinIdentity = null;
 
-
-                currentCoinIdentity.Armed = false;
+                SetMatchingStatus(currentCoinIdentity, false);
 
                 // checking vertically
 
@@ -207,8 +220,8 @@ public class FlipManager : MonoBehaviour
                     previousVertCoinIdentity = currentColumnSo.CoinColumn[j-1].GetComponent<MyCoinIdentity>();
                     if (previousVertCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
                     {
-                        previousVertCoinIdentity.Armed = true;
-                        currentCoinIdentity.Armed = true;
+                        SetMatchingStatus(previousVertCoinIdentity, true);
+                        SetMatchingStatus(currentCoinIdentity, true);
                     }
                 }
 
@@ -217,21 +230,94 @@ public class FlipManager : MonoBehaviour
                     nextVertCoinIdentity = currentColumnSo.CoinColumn[j + 1].GetComponent<MyCoinIdentity>();
                     if (nextVertCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
                     {
-                        nextVertCoinIdentity.Armed = true;
-                        currentCoinIdentity.Armed = true;
+                        SetMatchingStatus(nextVertCoinIdentity, true);
+                        SetMatchingStatus(currentCoinIdentity, true);
                     }
                 }
 
                 // checking horizontally
+                currentTestCounter++;  //crash at 5..7?
+                int currentColumnsCount = ColumnsList[i].CoinColumn.Count;
 
-              //  if (currentCoinIdentity.MyColumn < ColumnsList.Count)
+                if (currentCoinIdentity.MyColumn < ColumnsList.Count-1)
                 {
-               //     nextHorizCoinIdentity
+                    //   nextHorizCoinIdentity
+                    ColumnSo nextColumn = ColumnsList[currentCoinIdentity.MyColumn + 1];
+
+
+                    // find current coin index in existing column
+                    //      int currentCoinIndex = System.Array.IndexOf(ColumnsList[currentCoinIdentity.MyColumn], currentCoinIdentity.gameObject);
+
+
+                    // j is position
+
+                    //  if (nextColumn.CoinColumn[j] != null)
+
+                    //    if (nextColumn.CoinColumn.Count < j)
+                    //  if (nextColumn.CoinColumn.Count >= j)
+                      if (nextColumn.CoinColumn.Count >= currentColumnsCount)
+                        {
+                            if (nextColumn.CoinColumn[j] != null)
+                            {
+                                nextHorizCoinIdentity = nextColumn.CoinColumn[j].GetComponent<MyCoinIdentity>();
+                                if (nextHorizCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
+                                {
+                                    SetMatchingStatus(nextHorizCoinIdentity, true);
+                                    SetMatchingStatus(currentCoinIdentity, true);
+                                }
+                            }
+                        }
+                    /*
+
+                    int currentCoinIndex = 0;
+
+                    for (int k = 0; k < ColumnsList[currentCoinIdentity.MyColumn].CoinColumn.Count; k++)
+                    {
+                     //   if ()
+                    }
+
+                    */
+
+                    // check if a coin is there, or if it is null
+
+                    //  newCoinIdentity.MyColumn = System.Array.IndexOf(Alleys, alley.gameObject);
+                }   // end check next
+
+                // check previous
+
+                if (currentCoinIdentity.MyColumn > 0)
+                {
+                    ColumnSo prevColumn = ColumnsList[currentCoinIdentity.MyColumn - 1];
+                    if (prevColumn.CoinColumn.Count >= currentColumnsCount)
+                    {
+                        if (prevColumn.CoinColumn[j] != null)
+                        {
+                            previousHorizCoinIdentity = prevColumn.CoinColumn[j].GetComponent<MyCoinIdentity>();
+                            if (previousHorizCoinIdentity.FrontColor == currentCoinIdentity.FrontColor)
+                            {
+                                SetMatchingStatus(previousHorizCoinIdentity, true);
+                                SetMatchingStatus(currentCoinIdentity, true);
+                            }
+                        }
+
+                    }
+
+
+
+
+
                 }
 
 
 
-            }
+
+
+
+
+
+
+
+            }  // end J
 
 
         }
@@ -239,6 +325,19 @@ public class FlipManager : MonoBehaviour
 
 
     }
+
+    void SetMatchingStatus(MyCoinIdentity coinID, bool isMatching)
+    {
+        Color useColor = LonelyTextColor;
+        if (isMatching)
+        {
+            useColor = MatchingTextColor;
+        }
+        coinID.TextMesh.color = useColor;
+        coinID.Matching = isMatching;
+    }
+
+
 
     private void CoinSideUpdates()
     {

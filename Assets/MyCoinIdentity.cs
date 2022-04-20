@@ -11,12 +11,13 @@ public class MyCoinIdentity : MonoBehaviour
     public GameObject Backside;
 
     public bool BackActive;
-    public bool Armed;
+    public bool Matching;
     public Material FrontColor;
     public Material BackColor;
     private Material newFrontColor;
     private Material newBackColor;
 
+    public TextMesh TextMesh;
 
     public int MyColumn;
     public int MyRow;
@@ -35,6 +36,7 @@ public class MyCoinIdentity : MonoBehaviour
 
         BackActive = !BackActive;
         Animator.SetTrigger(performFlip);
+        flipManager.CheckIfMatching();
 
     }
 
@@ -70,7 +72,7 @@ public class MyCoinIdentity : MonoBehaviour
     {
         FrontColor = null;
         BackColor = null;
-        Armed = false;
+        Matching = false;
     }
 
     public void AssignMaterials(Material frontMatAssign, Material backMatAssign)
