@@ -102,7 +102,7 @@ public class FlipManager : MonoBehaviour
         for (int i = 0; i < ColumnsList.Count; i++)
         {
             GameObject newCoin = InstantiatedCoin();
-            ColumnsList[i].CoinColumn.Add(newCoin);
+            ColumnsList[i].CoinColumn.Insert(0, newCoin);
             newCoin.GetComponent<MyCoinIdentity>().MyColumn = i;
             PlaceNewCoinInField(i == 0);
         }
@@ -110,7 +110,6 @@ public class FlipManager : MonoBehaviour
 
     void PlaceNewCoinInField(bool resetH)
     {
-
         Transform currentCoin = currentPlacedCoins[currentPlacedCoins.Count - 1].transform;
         float nextCoinHpos = 0.0f;
 
@@ -137,6 +136,8 @@ public class FlipManager : MonoBehaviour
     {
         CoinSideUpdates();
 
+
+        // TODO - properly relocate SHOOTING COIN to beginning of ALLEY
         /*
         //  shootingCoinTransform.position = activeAlley.transform.
         Mesh mesh = AlleyObject.GetComponent<MeshFilter>().mesh;
@@ -161,22 +162,7 @@ public class FlipManager : MonoBehaviour
         ColumnSo thisColObject = Dict_Alley_Columns[alley];
         newCoinIdentity.MyColumn = System.Array.IndexOf(Alleys, alley.gameObject);
 
-        bool lastShotCoin = false;
-        Transform borderCoin = null;
-
-        if (thisColObject.CoinColumn[thisColObject.CoinColumn.Count - 1].GetComponent<MyCoinIdentity>().isShotCoin)
-        {
-            lastShotCoin = true;
-        }
-
-        if (lastShotCoin)
-        {
-            borderCoin = thisColObject.CoinColumn[thisColObject.CoinColumn.Count - 1].transform;
-        }
-        else
-        {
-            borderCoin = thisColObject.CoinColumn[0].transform;
-        }
+        Transform borderCoin = thisColObject.CoinColumn[thisColObject.CoinColumn.Count - 1].transform;
 
         thisColObject.CoinColumn.Add(newCoin);
 
@@ -236,7 +222,11 @@ public class FlipManager : MonoBehaviour
     public void CheckAllCoinsMatching()
     {
 
-        int currentTestCounter = 0;
+        for (int i = 0; i < currentPlacedCoins.Count; i++)
+        {
+            SetMatchingStatus(currentPlacedCoins[i].GetComponent<MyCoinIdentity>(), false);
+        }
+
 
         for (int i = 0; i < ColumnsList.Count; i++)
         {
@@ -255,8 +245,6 @@ public class FlipManager : MonoBehaviour
                 MyCoinIdentity previousHorizCoinIdentity = null;
                 MyCoinIdentity nextHorizCoinIdentity = null;
 
-                SetMatchingStatus(currentCoinIdentity, false);
-
                 // checking vertically
 
                 if (j > 0)
@@ -272,7 +260,6 @@ public class FlipManager : MonoBehaviour
                 }
 
                 // checking horizontally
-                currentTestCounter++;  //crash at 5..7?
                 int currentColumnsCount = ColumnsList[i].CoinColumn.Count;
 
                 if (currentCoinIdentity.MyColumn < ColumnsList.Count-1)
@@ -281,16 +268,6 @@ public class FlipManager : MonoBehaviour
                     ColumnSo nextColumn = ColumnsList[currentCoinIdentity.MyColumn + 1];
 
 
-                    // find current coin index in existing column
-                    //      int currentCoinIndex = System.Array.IndexOf(ColumnsList[currentCoinIdentity.MyColumn], currentCoinIdentity.gameObject);
-
-
-                    // j is position
-
-                    //  if (nextColumn.CoinColumn[j] != null)
-
-                    //    if (nextColumn.CoinColumn.Count < j)
-                    //  if (nextColumn.CoinColumn.Count >= j)
                       if (nextColumn.CoinColumn.Count >= currentColumnsCount)
                         {
                             if (nextColumn.CoinColumn[j] != null)
@@ -298,21 +275,8 @@ public class FlipManager : MonoBehaviour
                                 nextHorizCoinIdentity = nextColumn.CoinColumn[j].GetComponent<MyCoinIdentity>();
                                 CheckColorMatches(nextHorizCoinIdentity, currentCoinIdentity);
                             }
-                    }
-                    /*
-
-                    int currentCoinIndex = 0;
-
-                    for (int k = 0; k < ColumnsList[currentCoinIdentity.MyColumn].CoinColumn.Count; k++)
-                    {
-                     //   if ()
-                    }
-
-                    */
-
-                    // check if a coin is there, or if it is null
-
-                    //  newCoinIdentity.MyColumn = System.Array.IndexOf(Alleys, alley.gameObject);
+                        }
+            
                 }   // end check next
 
                 // check previous
