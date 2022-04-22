@@ -40,7 +40,8 @@ public class FlipManager : MonoBehaviour
     public Color MatchingTextColor = new Color();
     public Color LonelyTextColor = new Color();
 
-
+    [HideInInspector]
+    public AlleyPress lastAlleyPress;
 
     int namedCoinCounter;
     int namedColumnListCounter;
@@ -145,22 +146,29 @@ public class FlipManager : MonoBehaviour
 
         shootingCoinTransform.position = vertices[0];
         */
+        lastAlleyPress = alleyPress;
         shootingCoinTransform.gameObject.SetActive(true);
         shootingCoinTransform.position = alleyPress.LaunchPoint.position;
 
-        InstantiateShotCoinAtColumn(alleyPress);
+        //   InstantiateShotCoinAtColumn(alleyPress);
 
     }
 
-    void InstantiateShotCoinAtColumn(AlleyPress alley)
+
+    // happens on coinHit
+    public void InstantiateShotCoinAtColumn()
     {
+
+
         GameObject newCoin = InstantiatedCoin();
         MyCoinIdentity newCoinIdentity = newCoin.GetComponent<MyCoinIdentity>();
         newCoinIdentity.isShotCoin = true;
 
         TransferColorValues(shootingCoinIdentity, newCoinIdentity);
-        ColumnSo thisColObject = Dict_Alley_Columns[alley];
-        newCoinIdentity.MyColumn = System.Array.IndexOf(Alleys, alley.gameObject);
+        ColumnSo thisColObject = Dict_Alley_Columns[lastAlleyPress];
+        newCoinIdentity.MyColumn = System.Array.IndexOf(Alleys, lastAlleyPress.gameObject);
+
+        lastAlleyPress = null;
 
         Transform borderCoin = thisColObject.CoinColumn[thisColObject.CoinColumn.Count - 1].transform;
 
@@ -203,8 +211,38 @@ public class FlipManager : MonoBehaviour
         {
             SetMatchingStatus(coinA, true);
             SetMatchingStatus(coinB, true);
+            AddToMatchingGroup(coinA, coinB, true);
         }
     }
+
+    void AddToMatchingGroup(MyCoinIdentity groupOwner, MyCoinIdentity groupMember, bool bothSides)
+    {
+        /*
+        for (int i = 0; i < length; i++)
+        {
+
+        }
+        */
+
+        if (!groupOwner.MatchingGroup.Contains(groupMember.gameObject))
+        {
+            groupOwner.MatchingGroup.Add(groupMember.gameObject);
+        }
+
+        if (bothSides)
+        {
+            AddToMatchingGroup(groupMember, groupOwner, false);
+        }
+
+    }
+
+    void MatchingGroupCheck(MyCoinIdentity groupMember)
+    {
+
+    }
+
+
+
 
     void SetMatchingStatus(MyCoinIdentity coinID, bool isMatching)
     {
@@ -222,9 +260,13 @@ public class FlipManager : MonoBehaviour
     public void CheckAllCoinsMatching()
     {
 
+        // clear all associations
         for (int i = 0; i < currentPlacedCoins.Count; i++)
         {
-            SetMatchingStatus(currentPlacedCoins[i].GetComponent<MyCoinIdentity>(), false);
+            MyCoinIdentity currentCoinIdentity = currentPlacedCoins[i].GetComponent<MyCoinIdentity>();
+
+            SetMatchingStatus(currentCoinIdentity, false);
+            currentCoinIdentity.MatchingGroup.Clear();
         }
 
 

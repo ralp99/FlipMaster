@@ -9,6 +9,7 @@ public class MyCoinIdentity : MonoBehaviour
     public Animator Animator;
     public GameObject Frontside;
     public GameObject Backside;
+    public List<GameObject> MatchingGroup = new List<GameObject>();
 
     public bool BackActive;
     public bool Matching;
@@ -73,6 +74,7 @@ public class MyCoinIdentity : MonoBehaviour
         FrontColor = null;
         BackColor = null;
         Matching = false;
+        MatchingGroup.Clear();
     }
 
     public void AssignMaterials(Material frontMatAssign, Material backMatAssign)

@@ -5,9 +5,14 @@ using UnityEngine;
 public class ShootingCoin : MonoBehaviour
 {
 
-
+    private FlipManager flipManager;
 
      public float incrementMove;
+
+    private void Start()
+    {
+        flipManager = FlipManager.Instance;
+    }
 
     void Update()
     {
@@ -17,7 +22,15 @@ public class ShootingCoin : MonoBehaviour
         //                 picked.transform.position = Vector3.MoveTowards(picked.transform.position, EnemyTarget_Dict[picked].position, step);
 
         transform.position = newPos;
-
-
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "coin")
+        {
+            flipManager.InstantiateShotCoinAtColumn();
+            gameObject.SetActive(false);
+        }
+    }
+
 }

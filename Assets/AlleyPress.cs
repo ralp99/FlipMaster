@@ -18,13 +18,19 @@ public class AlleyPress : MonoBehaviour
 
     public void ClickEvents_TouchAlley()
     {
-        AlleyVisibility(true);
+        if (!flipManager.lastAlleyPress)
+        {
+            AlleyVisibility(true);
+        }
     }
 
     public void ClickEvents_ReleaseTouch()
     {
-        flipManager.ClickEvents_ShootPiece(this);
-        AlleyVisibility(false);
+        if (!flipManager.lastAlleyPress)
+        {
+            flipManager.ClickEvents_ShootPiece(this);
+            AlleyVisibility(false);
+        }
     }
 
     void AlleyVisibility(bool active)
