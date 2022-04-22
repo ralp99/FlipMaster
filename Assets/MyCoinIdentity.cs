@@ -69,13 +69,43 @@ public class MyCoinIdentity : MonoBehaviour
        StartCoroutine(InitializeColors());
     }
 
-    private void OnDisable()
+    public void EmptyCoin()
     {
         FrontColor = null;
         BackColor = null;
         Matching = false;
         MatchingGroup.Clear();
+
+        if (!flipManager)
+        {
+            flipManager = FlipManager.Instance;
+        }
+
+        ColumnSo myColumnSo = flipManager.ColumnsList[MyColumn];
+
+        int myIndex = 0;
+        int coinColumnLength = myColumnSo.CoinColumn.Count;
+
+        for (int i = 0; i < coinColumnLength; i++)
+        {
+            if (myColumnSo.CoinColumn[i] == this.gameObject)
+            {
+                myIndex = i;
+                break;
+            }
+        }
+
+        if (myIndex < coinColumnLength)
+        {
+            // activate slam for this column
+        }
+
+        myColumnSo.CoinColumn.Remove(this.gameObject);
+        flipManager.SwapToInactivePool(this.gameObject);
+        gameObject.SetActive(false);
     }
+
+   
 
     public void AssignMaterials(Material frontMatAssign, Material backMatAssign)
     {

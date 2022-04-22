@@ -31,7 +31,9 @@ public class FlipManager : MonoBehaviour
 
     public List<ColumnSo> ColumnsList;
 
-    public List<GameObject> currentPlacedCoins = new List<GameObject>();
+    public List<GameObject> CurrentPlacedCoins = new List<GameObject>();
+    public List<GameObject> InactiveCoinPool = new List<GameObject>();
+
 
     public Dictionary<AlleyPress, ColumnSo> Dict_Alley_Columns = new Dictionary<AlleyPress, ColumnSo>();
 
@@ -58,6 +60,14 @@ public class FlipManager : MonoBehaviour
         GameSessionStart();
     }
    
+    public void SwapToInactivePool (GameObject thisObject)
+    {
+        CurrentPlacedCoins.Remove(thisObject);
+        if (!InactiveCoinPool.Contains(thisObject))
+        {
+            InactiveCoinPool.Add(thisObject);
+        }
+    }
 
     void GameSessionStart()
 
@@ -90,7 +100,7 @@ public class FlipManager : MonoBehaviour
         newCoin.GetComponent<MyCoinIdentity>().TextMesh.text = namedCoinCounter.ToString();
         namedCoinCounter++;
         newCoin.transform.SetParent(CoinSlider);
-        currentPlacedCoins.Add(newCoin);
+        CurrentPlacedCoins.Add(newCoin);
         return newCoin;
     }
 
@@ -111,12 +121,12 @@ public class FlipManager : MonoBehaviour
 
     void PlaceNewCoinInField(bool resetH)
     {
-        Transform currentCoin = currentPlacedCoins[currentPlacedCoins.Count - 1].transform;
+        Transform currentCoin = CurrentPlacedCoins[CurrentPlacedCoins.Count - 1].transform;
         float nextCoinHpos = 0.0f;
 
-        if (currentPlacedCoins.Count > 1 && !resetH)
+        if (CurrentPlacedCoins.Count > 1 && !resetH)
         {
-            Transform previousCoin = currentPlacedCoins[currentPlacedCoins.Count - 2].transform;
+            Transform previousCoin = CurrentPlacedCoins[CurrentPlacedCoins.Count - 2].transform;
             nextCoinHpos = previousCoin.transform.localPosition.x + HcoinPadding;
         }
 
@@ -159,7 +169,6 @@ public class FlipManager : MonoBehaviour
     public void InstantiateShotCoinAtColumn()
     {
 
-
         GameObject newCoin = InstantiatedCoin();
         MyCoinIdentity newCoinIdentity = newCoin.GetComponent<MyCoinIdentity>();
         newCoinIdentity.isShotCoin = true;
@@ -179,7 +188,7 @@ public class FlipManager : MonoBehaviour
 
         newCoin.transform.position = newCoinPosition;
 
-        CheckAllCoinsMatching();
+        CheckAllCoinsMatching(newCoinIdentity);
 
     }
 
@@ -260,13 +269,13 @@ public class FlipManager : MonoBehaviour
 
 
 
-    public void CheckAllCoinsMatching()
+    public void CheckAllCoinsMatching(MyCoinIdentity doesShotMatch = null)
     {
 
         // clear all associations
-        for (int i = 0; i < currentPlacedCoins.Count; i++)
+        for (int i = 0; i < CurrentPlacedCoins.Count; i++)
         {
-            MyCoinIdentity currentCoinIdentity = currentPlacedCoins[i].GetComponent<MyCoinIdentity>();
+            MyCoinIdentity currentCoinIdentity = CurrentPlacedCoins[i].GetComponent<MyCoinIdentity>();
 
             SetMatchingStatus(currentCoinIdentity, false);
             currentCoinIdentity.MatchingGroup.Clear();
@@ -338,29 +347,23 @@ public class FlipManager : MonoBehaviour
                         }
                     }
                 }
-
-
-
             }  // end J
-
-
         }
 
-        MergeAllMatchingGroups();
-
-       
-
+        MergeAllMatchingGroups(doesShotMatch);
     }
 
-    void MergeAllMatchingGroups()
+    void MergeAllMatchingGroups(MyCoinIdentity doesShotMatch = null)
     {
         // merge all matching groups to each member
 
-        for (int i = 0; i < currentPlacedCoins.Count; i++)  // start per-coin
+        bool shouldClear = false;
+
+        for (int i = 0; i < CurrentPlacedCoins.Count; i++)  // start per-coin
         {
             List<GameObject> myGroupMembers = new List<GameObject>();
 
-            MyCoinIdentity currentCoin = currentPlacedCoins[i].GetComponent<MyCoinIdentity>();
+            MyCoinIdentity currentCoin = CurrentPlacedCoins[i].GetComponent<MyCoinIdentity>();
 
             for (int j = 0; j < currentCoin.MatchingGroup.Count; j++)
             {
@@ -382,7 +385,26 @@ public class FlipManager : MonoBehaviour
                     if (!groupMember.MatchingGroup.Contains(currentAddingCoin))
                     {
                         groupMember.MatchingGroup.Add(currentAddingCoin);
+
+                        if (doesShotMatch != null)
+                        {
+                            if (currentAddingCoin == doesShotMatch.gameObject)
+                            {
+                                shouldClear = true;
+                                print("dsm yes");
+                            }
+                        }
                     }
+                }
+
+                // need to check if match 3 on H or V
+                if (shouldClear && myGroupMembers.Count > 2)
+                {
+                    for (int m = 0; m < myGroupMembers.Count; m++)
+                    {
+                        myGroupMembers[m].GetComponent<MyCoinIdentity>().EmptyCoin();
+                    }
+                    shouldClear = false;
                 }
             }
         }  // end each individual coin
