@@ -217,17 +217,17 @@ public class FlipManager : MonoBehaviour
 
     void AddToMatchingGroup(MyCoinIdentity groupOwner, MyCoinIdentity groupMember, bool bothSides)
     {
-        /*
-        for (int i = 0; i < length; i++)
-        {
+      
+        MatchingGroupCheck(groupOwner, groupMember);
 
+        /*
+        for (int i = 0; i < groupMember.MatchingGroup.Count; i++)
+        {
+            MyCoinIdentity subMember = groupMember.MatchingGroup[i].GetComponent<MyCoinIdentity>();
+            // MatchingGroupCheck(groupOwner, subMember);
+            AddToMatchingGroup(groupOwner, subMember, true);
         }
         */
-
-        if (!groupOwner.MatchingGroup.Contains(groupMember.gameObject))
-        {
-            groupOwner.MatchingGroup.Add(groupMember.gameObject);
-        }
 
         if (bothSides)
         {
@@ -236,9 +236,12 @@ public class FlipManager : MonoBehaviour
 
     }
 
-    void MatchingGroupCheck(MyCoinIdentity groupMember)
+    void MatchingGroupCheck(MyCoinIdentity groupOwner, MyCoinIdentity groupMember)
     {
-
+        if (!groupOwner.MatchingGroup.Contains(groupMember.gameObject))
+        {
+            groupOwner.MatchingGroup.Add(groupMember.gameObject);
+        }
     }
 
 
@@ -343,11 +346,47 @@ public class FlipManager : MonoBehaviour
 
         }
 
+        MergeAllMatchingGroups();
 
+       
 
     }
 
+    void MergeAllMatchingGroups()
+    {
+        // merge all matching groups to each member
 
+        for (int i = 0; i < currentPlacedCoins.Count; i++)  // start per-coin
+        {
+            List<GameObject> myGroupMembers = new List<GameObject>();
+
+            MyCoinIdentity currentCoin = currentPlacedCoins[i].GetComponent<MyCoinIdentity>();
+
+            for (int j = 0; j < currentCoin.MatchingGroup.Count; j++)
+            {
+                MyCoinIdentity subMember = currentCoin.MatchingGroup[j].GetComponent<MyCoinIdentity>();
+
+                if (!myGroupMembers.Contains(subMember.gameObject))
+                {
+                    myGroupMembers.Add(subMember.gameObject);
+                }
+            }
+
+            for (int k = 0; k < myGroupMembers.Count; k++)
+            {
+                MyCoinIdentity groupMember = myGroupMembers[k].GetComponent<MyCoinIdentity>();
+                for (int l = 0; l < myGroupMembers.Count; l++)
+                {
+                    GameObject currentAddingCoin = myGroupMembers[l];
+
+                    if (!groupMember.MatchingGroup.Contains(currentAddingCoin))
+                    {
+                        groupMember.MatchingGroup.Add(currentAddingCoin);
+                    }
+                }
+            }
+        }  // end each individual coin
+    }
 
 
 
